@@ -1,0 +1,10 @@
+[project]
+name = "synthetic-data-gen"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic==2.11.7",
+    "ollama==0.5.1",
+    "tqdm==4.67.1",
+]
