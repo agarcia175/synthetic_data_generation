@@ -4,8 +4,9 @@ Since the only expected need is to ask for certain generation, I sacrifice any e
 Just a method to ask for the generation, plus some minimal generation parameters (usual ones: temperature, max_tokens, ...)
 """
 from abc import ABC, abstractmethod
+from typing import Coroutine, Any
 
-from ollama import ChatResponse, Client
+from ollama import ChatResponse, AsyncClient, Client
 
 
 # hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M
@@ -14,6 +15,10 @@ class LLMClientBase(ABC):
 
     @abstractmethod
     def generate(self, system_message, user_message, temperature: float, max_tokens: int) -> str:
+        pass
+
+    @abstractmethod
+    def generate_async(self, system_message, user_message, temperature: float, max_tokens: int) -> Coroutine[Any, Any, str]:
         pass
 
     @classmethod
@@ -31,6 +36,7 @@ class OllamaLLMClient(LLMClientBase):
         self.model_name = model_name
         # self.client = Client(base_url=host)
         self.client = Client()
+        self.async_client = AsyncClient()
 
     def generate(self, system_message, user_message, temperature: float, max_tokens: int, think: bool = False) -> str:
         messages = []
@@ -38,5 +44,16 @@ class OllamaLLMClient(LLMClientBase):
             messages.append({'role': self.get_system_role(), 'content': system_message})
         messages.append({'role': self.get_user_role(), 'content': user_message})
         response: ChatResponse = self.client.chat(model=self.model_name, messages=messages, think=think)
+        generated_content = response['message']['content']
+        return generated_content
+
+    async def generate_async(self, system_message, user_message, temperature: float, max_tokens: int, think: bool = False) -> Coroutine[Any, Any, str]:
+        messages = []
+        # print(f'>>> {user_message}')
+        # print('=====================')
+        if system_message:
+            messages.append({'role': self.get_system_role(), 'content': system_message})
+        messages.append({'role': self.get_user_role(), 'content': user_message})
+        response: ChatResponse = await self.async_client.chat(model=self.model_name, messages=messages, think=think)
         generated_content = response['message']['content']
         return generated_content
