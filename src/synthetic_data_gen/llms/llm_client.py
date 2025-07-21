@@ -43,17 +43,17 @@ class OllamaLLMClient(LLMClientBase):
         if system_message:
             messages.append({'role': self.get_system_role(), 'content': system_message})
         messages.append({'role': self.get_user_role(), 'content': user_message})
-        response: ChatResponse = self.client.chat(model=self.model_name, messages=messages, think=think)
+        # https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
+        response: ChatResponse = self.client.chat(model=self.model_name, messages=messages, think=think, options={'temperature': temperature, 'num_predict': max_tokens})
         generated_content = response['message']['content']
         return generated_content
 
     async def generate_async(self, system_message, user_message, temperature: float, max_tokens: int, think: bool = False) -> Coroutine[Any, Any, str]:
         messages = []
-        # print(f'>>> {user_message}')
-        # print('=====================')
         if system_message:
             messages.append({'role': self.get_system_role(), 'content': system_message})
         messages.append({'role': self.get_user_role(), 'content': user_message})
-        response: ChatResponse = await self.async_client.chat(model=self.model_name, messages=messages, think=think)
+        # https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
+        response: ChatResponse = await self.async_client.chat(model=self.model_name, messages=messages, think=think, options={'temperature': temperature, 'num_predict': max_tokens})
         generated_content = response['message']['content']
         return generated_content
