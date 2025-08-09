@@ -1,48 +1,69 @@
-## Synthetic data generator
+# 📂 Synthetic Datasets Generation
 
-Based on LLMs, to generate (or label) synthetic data for different type of tasks (extensible).
+Code about using LLMs to generate synthetic labelled datasets for downstream model training.
 
-The main elements are:
-  - the variability components that create the variation during the generation
-    - their prompts (templates)
-  - the task description
-  - the task outcome format
-  - the full prompt assembler
-  - the main component to run all
+**IMPORTANT:** This is just a playground project for my personal tests.
+
+**NOTE:** Work in progress, for now only for classification datasets, but maybe more task-types included in the future 
+
+## 🚀 Overview
 
 
-The main flow of the process is the following.
+This repository contains code and notebooks for personal tests and experiments related to synthetic data generation. 
+It explores various techniques, models, and libraries to create realistic artificial datasets for different use cases.
 
- - There is a main description of the task, e.g. "You are a system that generates..."
- - There is a description of the input/output format (derived from Pydantic models).
- - Maybe few-shots? (derived from manual instances of Pydantic models)
- - For each variability component:
-   - there is a description of the component (plus the instance of the component itself)
-   - components might be generated or passed manually (they need their prompt and config, e.g. amount of them)
+## 🛠️ Key Technologies & Libraries
 
-Then:
- - The full prompt is composed out of it.
- - An LLM is called for generation, iteratively.
- - The output is parsed into the expected format
- - The instances are stacked and stored
+  * **Python:** The primary programming language.
+  * **Ollama:** to quickly deploy and explore different open LLMs locally.
+  * **Asyncio:** to make the LLM calls asynchronous and more efficient.
+
+## 📁 Repository Structure
+
+Describe the main directories and files in your repository to help users navigate it.
+
+  * `notebooks/`: Jupyter notebooks with code examples and experiments.
+  * `src/`: Source code for any functions or modules.
+  * `data/`: Sample data or generated data files (if applicable).
+  * `README.md`: This file.
+
+## ⚙️ Getting Started
+
+Provide instructions on how someone can get the project up and running.
+
+### Prerequisites
+
+  * Python 3.11+
+  * A running instance of Ollama with the required LLM loaded 
+(could easily implement clients for third-party commercial LLMs)
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/your-repository.git
+    ```
+2.  Navigate to the project directory:
+    ```bash
+    cd your-repository
+    ```
+3.  Create a virtual environment and install the required dependencies from pyproject.toml file:
+    ```bash
+    uv pip install -r pyproject.toml
+    ```
+
+## 📝 Usage
 
 
-### Potential types of tasks
+  * "To see the synthetic data generation examples, open [notebooks/classification_data_example.ipynb](notebooks/classification_data_example.ipynb)."
 
- - Classification:
-   - the usual classification problem for a single label
-   - maybe also for multi-label? (including valid label combinations for each problem?)
-   - what about regression? (it would be a special case of classification with literal labels covering a 
-   gradation, a range, and them assign a float to the label: e.g: 5-stars into 0.0/0.25/0.5/0.75/1.0)
+## 🤝 Contribution & License
 
- - Sequence-labelling:
-   - for NER and similar tasks, selecting a sequence of words and assigning them a label (or labels)
 
- - Question-answering? (how would it be?)
-   - RAG related? (blobs of text, and pairs of Q&A from it?)
-     - Would require validation to ensure quality, diversity and correction
+### License
 
-Honestly, these cover most (if not all) of the potentially interesting tasks.
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
-You may think into even more complex stuff such as multitask. But that would boil down to first generate
-data for one task, and the use the generated examples to label them automatically, and combining labels.
+### Status
+
+This is a **personal repository for testing and learning**. I welcome feedback, suggestions, and ideas, but please note that the code is not intended for production use and may not be actively maintained.
