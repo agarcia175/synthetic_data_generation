@@ -38,12 +38,22 @@ class ElementsGenerationProcessorBase(ABC):
     async def generate_elements_async(self, number: int, variables: dict[str, Any]) -> list[str]:
         filled_user_message = self.user_message.replace(self.NUMBER_OF_ELEMENTS_PLACEHOLDER, str(number))
         filled_user_message = filled_user_message.format_map(variables)
-        generation_result = await self.llm_client.generate_async(
-            system_message=self.system_message, user_message=filled_user_message,
-            temperature=self.temperature, max_tokens=self.max_tokens)
-        generated_elements = self._parse_result(generation_result, number=number)
-        if len(generated_elements) != number:
-            raise AssertionError(f'The number of elements is not {number} (it is {len(generated_elements)}):\nGENERATION:\n{generation_result}')
+        attempts = 0
+        max_attempts = 3
+        generated_elements = None
+        while attempts < max_attempts:
+            generation_result = await self.llm_client.generate_async(
+                system_message=self.system_message, user_message=filled_user_message,
+                temperature=self.temperature, max_tokens=self.max_tokens)
+            generated_elements = self._parse_result(generation_result, number=number)
+            if len(generated_elements) != number:
+                if attempts >= max_attempts:
+                    raise AssertionError(f'The number of elements is not {number} (it is {len(generated_elements)}):\nGENERATION:\n{generation_result}')
+                else:
+                    attempts+=1
+                    print(f'The number of elements is not {number} (it is {len(generated_elements)}):\nGENERATION:\n{generation_result}, retrying ({attempts}/{max_attempts})')
+            else:
+                break
         return generated_elements
 
     def _parse_result(self, result: str, number: int) -> list[str]:

@@ -5,7 +5,7 @@ import asyncio
 import time
 from asyncio import Queue, Task
 
-from synthetic_data_gen.llms.llm_client import LLMClientBase, OllamaLLMClient
+from synthetic_data_gen.llms.llm_client import LLMClientBase
 from synthetic_data_gen.tasks.elements_generators import SourceTypesGenerationProcessor, TopicsGenerationProcessor, SubtopicsGenerationProcessor, \
     PersonasGenerationProcessor, \
     ClassificationInstancesGenerationProcessor, ElementsGenerationProcessorBase, LanguagesGenerationProcessor, LabelsGenerationProcessor
@@ -89,6 +89,7 @@ class ClassificationDataGeneration:
 
 
 if __name__ == '__main__':
+    from synthetic_data_gen.llms.ollama_client import OllamaLLMClient
     config = ClassificationDataGenConfig(
         task_description='A sentiment classification task with positive and negative examples',
         labels=[DataGenLabel(name='positive', desc='A positive piece of content'), DataGenLabel(name='negative', desc='A negative piece of content')],
